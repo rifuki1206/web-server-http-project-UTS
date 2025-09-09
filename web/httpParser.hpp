@@ -201,6 +201,15 @@ std::string responsfunc(std::string msg){
                response += "// File " + req.uri.substr(1) + " tidak ditemukan";
            }
 
+        }else if(req.uri.rfind(".ico") == req.uri.length() - 4){
+           response = httpHeader::getResponseHeadersIco();
+           if(fileEdit::checkFileExists("frontend/"+req.uri.substr(1)))
+           {
+               response += fileEdit::readFile("frontend/"+req.uri.substr(1));
+           }else{
+               response += "// File " + req.uri.substr(1) + " tidak ditemukan";
+           }
+
         }
     }
     else if(req.method == "POST")
@@ -224,7 +233,18 @@ std::string responsfunc(std::string msg){
                 errorResponse["error"] = "Bad Request: title, category, and content cannot be empty.";
                 return response + errorResponse.dump();
             }
-            
+            //new code here
+            for (const auto& item : db["data"])
+            {
+                if (item["title"] == jsonBody["title"])
+                {
+                    response = httpHeader::getResponseHeadersJson();
+                    nlohmann::json errorResponse;
+                    errorResponse["error"] = "Conflict: An item with the same title already exists.";
+                    return response + errorResponse.dump();
+                }
+            }
+            //end new code here
             std::cout<<"nuh uh\n";
             db["data"].push_back(jsonBody);
             fileEdit::editFile("database/data.json", db.dump(2));
@@ -265,8 +285,8 @@ std::string responsfunc(std::string msg){
             }
             if(!found)
             {
-                response = httpHeader::getResponseHeadersNotFound();
-                response += "<h1>404 Not Found: Item with ID " + title + " not found.</h1>";
+                response = httpHeader::getResponseHeadersJson();
+                response += "{\"error\": \"Item with ID " + title + " not found.\"}";
                 return response;
             }
             fileEdit::editFile("database/data.json", db.dump(2));
@@ -291,8 +311,8 @@ std::string responsfunc(std::string msg){
             }
             if(!found)
             {
-                response = httpHeader::getResponseHeadersNotFound();
-                response += "<h1>404 Not Found: Item with ID " + title + " not found.</h1>";
+                response = httpHeader::getResponseHeadersJson();
+                response += "{\"error\": \"Item with ID " + title + " not found.\"}";
                 return response;
             }
             fileEdit::editFile("database/data.json", db.dump(2));
