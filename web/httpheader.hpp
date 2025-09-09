@@ -34,4 +34,11 @@ namespace httpHeader
                "Connection: close\r\n"
                "\r\n";
     }
+    inline std::string getResponseHeadersIco(){
+        return "HTTP/1.1 200 OK\r\n"
+               "Content-Type: image/x-icon\r\n"
+               "Connection: close\r\n"
+               "\r\n";
+    }
 } // namespace httpHeader
+
