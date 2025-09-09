@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cctype>
 #include "json.hpp"
 #include "httpheader.hpp"
 #include "fileEdit.hpp"
@@ -17,6 +18,12 @@ struct httpRequest
     std::string body;
 };
 
+std::string toLowerCase(std::string msg)
+{
+    std::string lowerMsg = msg;
+    std::transform(lowerMsg.begin(), lowerMsg.end(), lowerMsg.begin(), [](unsigned char c) { return std::tolower(c); });
+    return lowerMsg;
+}
 namespace httpParser
 {
      httpRequest parser(const std::string& msg)
@@ -111,7 +118,7 @@ std::string responsfunc(std::string msg){
                 std::cout<<"search\n";
                 for (int i=0;i<jsonResponse["data"].size();i++)
                 {
-                    if (jsonResponse["data"][i]["title"].get<std::string>().find(searchQuery) != std::string::npos)
+                    if (toLowerCase(jsonResponse["data"][i]["title"].get<std::string>()).find(toLowerCase(searchQuery)) != std::string::npos)
                     {
                         std::cout<<i;
                         ids.push_back(i);
