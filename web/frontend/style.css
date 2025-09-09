@@ -1,0 +1,140 @@
+.bebek {
+    background-color: yellow;
+}
+
+#search-container {
+    margin: 10px 0;
+}
+
+#searchInput {
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 6px 12px;
+    font-size: 14px;
+    margin: 4px;
+    border: none;
+    border-radius: 4px;
+    background-color: #199dd2ff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #199dd2ff;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #199dd2ff;
+    padding: 10px;
+    width:250px;
+    color: white;
+    position: relative;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.hamburger {
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.navbar-menu {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar-menu li {
+    background-color: #199dd2ff;
+    padding: 10px;
+    border-bottom: 1px solid #199dd2ff;
+}
+
+.navbar-menu li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.navbar-menu li:hover {
+    background-color: #199dd2ff;
+}
+
+/* 🔹 Tampilkan menu jika aktif */
+.navbar-menu.show {
+    display: block;
+}
+
+#postForm {
+    border: 1px solid #ccc;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    max-width: 400px;
+}
+
+#postForm input, 
+#postForm textarea, 
+#postForm select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+#postForm button {
+    padding: 6px 12px;
+    margin-right: 6px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#postForm button:hover {
+    background: #45a049;
+}
+/* 🔹 Tampilkan menu jika aktif N*/
+
+//tabel style
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+/* Navbar styling */
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #199dd2ff;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+//tabel style N
