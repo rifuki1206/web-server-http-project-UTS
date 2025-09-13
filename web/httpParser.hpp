@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include "json.hpp"
 #include "httpheader.hpp"
@@ -17,8 +18,41 @@ struct httpRequest
     std::string contentType;
     std::string body;
 };
-
-std::string toLowerCase(std::string msg)
+inline char hekstochar(std::array<char, 2> hex)
+{
+    return static_cast<char>(std::stoi(std::string(hex.data(), 2), nullptr, 16));
+}
+/**
+ * list of important characters
+ * space = %20
+ * %= %25
+ * ! = %21
+ * + = %2B
+ * , = %2C
+ */
+inline std::string uridecoder(const std::string& uri)
+{
+    std::string decoded;
+    for (size_t i = 0; i < uri.length(); ++i)
+    {
+        if (uri[i] == '%' && i + 2 < uri.length())
+        {
+            std::array<char, 2> hex = {uri[i + 1], uri[i + 2]};
+            decoded += hekstochar(hex);
+            i += 2;
+        }
+        else if (uri[i] == '+')
+        {
+            decoded += ' ';
+        }
+        else
+        {
+            decoded += uri[i];
+        }
+    }
+    return decoded;
+}
+inline std::string toLowerCase(std::string msg)
 {
     std::string lowerMsg = msg;
     std::transform(lowerMsg.begin(), lowerMsg.end(), lowerMsg.begin(), [](unsigned char c) { return std::tolower(c); });
@@ -81,6 +115,8 @@ namespace httpParser
 std::string responsfunc(std::string msg){
     httpRequest req = httpParser::parser(msg);
     std::string response;
+    std::string decodedUri = uridecoder(req.uri);
+    req.uri = decodedUri;
     if (req.method == "GET")
     {
         std::cout<<req.uri;
