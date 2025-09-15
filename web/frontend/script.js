@@ -17,7 +17,9 @@ function toggleMenu() {
 }
 
 // Fungsi kategori
-function categoryData(category){
+function categoryData(category) {
+  hidePostForm();
+  hideEditForm();
     fetch(`/?tag=${category}`)
         .then(response => response.json())
         .then(data => {
@@ -30,10 +32,55 @@ function categoryData(category){
 }
 // Toggle hamburger menu N
 
+// Fungsi tambahan untuk membuat tabel HTML
+function renderTable(data) {
+  if (!data || !data.data) {
+    document.getElementById("urah").innerText = "Tidak ada data ditemukan.";
+    return;
+  }
+
+  let table = `
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+    `;
+
+  data.data.forEach((item) => {
+    table += `
+            <tr>
+                <td>${item.title}</td>
+                <td>${item.description}</td>
+                <td>${item.category}</td>
+                <td>
+                    <button onclick='editItem(${JSON.stringify(item)})'>Edit</button>
+                    <button onclick='deleteItem(${JSON.stringify(item.title)})'>Delete</button>
+                </td>
+            </tr>
+        `;
+  });
+
+  table += "</table>";
+  document.getElementById("urah").innerHTML = table;
+}
+// Fungsi tambahan untuk membuat tabel HTML N
 
 // Post data
 // Tampilkan form
 function showPostForm() {
+  hideEditForm();
+
+    const titleEl = document.getElementById("postTitle");
+    const descEl = document.getElementById("postDescription");
+    const catEl = document.getElementById("postCategory");
+
+    if (titleEl) titleEl.value = "";
+    if (descEl) descEl.value = "";
+    if (catEl) catEl.value = "basic"; // set default category jika ingin
+
     document.getElementById("postForm").style.display = "block";
 }
 
@@ -69,6 +116,16 @@ function submitPost() {
     .then(response => response.json())
     .then(result => {
         alert("Data berhasil ditambahkan!");
+
+        // reset field setelah sukses
+      const titleEl = document.getElementById("postTitle");
+      const descEl = document.getElementById("postDescription");
+      const catEl = document.getElementById("postCategory");
+
+      if (titleEl) titleEl.value = "";
+      if (descEl) descEl.value = "";
+      if (catEl) catEl.value = "basic";
+
         hidePostForm();
         renderTable(result); // tampilkan data terbaru
     })
@@ -78,6 +135,60 @@ function submitPost() {
     });
 }
 // Post data N
+
+// 🔄 form edit data
+function editItem(item) {
+  hidePostForm();
+    document.getElementById("editForm").style.display = "block";
+    document.getElementById("editTitle").value = item.title;
+    document.getElementById("editDescription").value = item.description;
+    document.getElementById("editCategory").value = item.category;
+    // simpan judul lama untuk request PUT
+    document.getElementById("editForm").dataset.originalTitle = item.title;
+}
+
+function hideEditForm() {
+  document.getElementById("editForm").style.display = "none";
+}
+
+// 🔄 Kirim update ke server
+function submitEdit() {
+  const originalTitle = document.getElementById("editForm").dataset.originalTitle;
+  const newTitle = document.getElementById("editTitle").value;
+  const newDescription = document.getElementById("editDescription").value;
+  const newCategory = document.getElementById("editCategory").value;
+
+  if (!newTitle || !newDescription || !newCategory) {
+    alert("Semua field harus diisi!");
+    return;
+  }
+
+  const updatedData = {
+    title: newTitle,
+    description: newDescription,
+    category: newCategory
+  };
+
+  fetch(`/update/${encodeURIComponent(originalTitle)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updatedData)
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Update gagal");
+    return res.json();
+  })
+  .then(() => {
+    alert("Data berhasil diubah!");
+    hideEditForm();
+    fetchData(); // refresh tabel
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Terjadi kesalahan saat mengubah data.");
+  });
+}
+//form edit data N
 
 // 🔥 Delete data QQQQQ
 function deleteItem(title) {
@@ -111,42 +222,8 @@ function deleteItem(title) {
 function escapeHtml(text) {
   const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
   return String(text).replace(/[&<>"']/g, function(m){ return map[m]; });
-}// 🔒 Escape untuk keamanan (mencegah XSS) N
-
-// Fungsi tambahan untuk membuat tabel HTML
-function renderTable(data) {
-  if (!data || !data.data) {
-    document.getElementById("urah").innerText = "Tidak ada data ditemukan.";
-    return;
-  }
-
-  let table = `
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Actions</th>
-            </tr>
-    `;
-
-  data.data.forEach((item) => {
-    table += `
-            <tr>
-                <td>${item.title}</td>
-                <td>${item.description}</td>
-                <td>${item.category}</td>
-                <td>
-                    <button onclick='deleteItem(${JSON.stringify(item.title)})'>Delete</button>
-                </td>
-            </tr>
-        `;
-  });
-
-  table += "</table>";
-  document.getElementById("urah").innerHTML = table;
 }
-// Fungsi tambahan untuk membuat tabel HTML N
+// 🔒 Escape untuk keamanan (mencegah XSS) N
 
 //fetchData baru
 function fetchData() {
@@ -175,6 +252,9 @@ function fetchtest() {
 
 //searchData baru
 function searchData() {
+  hidePostForm();
+  hideEditForm();
+  
   const query = document.getElementById("searchInput").value.toLowerCase(); // BARUBARUBARU ambil teks dari input
 
   if (!query) {
