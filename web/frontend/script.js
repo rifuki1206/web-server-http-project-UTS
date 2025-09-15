@@ -79,6 +79,40 @@ function submitPost() {
 }
 // Post data N
 
+// 🔥 Delete data QQQQQ
+function deleteItem(title) {
+  if (!confirm(`Hapus item "${title}"?`)) return;
+
+  fetch(encodeURIComponent(`delete/${title}`), {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Server error ' + response.status);
+        }
+        return response.json();
+    })
+    .then(result => {
+        if (result.message) {
+            alert(result.message);
+        } else {
+            alert('Item berhasil dihapus');
+        }
+        fetchData(); // Refresh tabel
+    })
+    .catch(err => {
+        console.error('Gagal menghapus:', err);
+        alert('Gagal menghapus item. Cek console untuk detail.');
+    });
+}
+// Delete data N
+
+// 🔒 Escape untuk keamanan (mencegah XSS)QQQQQ
+function escapeHtml(text) {
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return String(text).replace(/[&<>"']/g, function(m){ return map[m]; });
+}// 🔒 Escape untuk keamanan (mencegah XSS) N
+
 // Fungsi tambahan untuk membuat tabel HTML
 function renderTable(data) {
   if (!data || !data.data) {
@@ -92,6 +126,7 @@ function renderTable(data) {
                 <th>Title</th>
                 <th>Description</th>
                 <th>Category</th>
+                <th>Actions</th>
             </tr>
     `;
 
@@ -101,6 +136,9 @@ function renderTable(data) {
                 <td>${item.title}</td>
                 <td>${item.description}</td>
                 <td>${item.category}</td>
+                <td>
+                    <button onclick='deleteItem(${JSON.stringify(item.title)})'>Delete</button>
+                </td>
             </tr>
         `;
   });
@@ -137,7 +175,7 @@ function fetchtest() {
 
 //searchData baru
 function searchData() {
-  const query = document.getElementById("searchInput").value; // ambil teks dari input
+  const query = document.getElementById("searchInput").value.toLowerCase(); // BARUBARUBARU ambil teks dari input
 
   if (!query) {
     alert("Silakan ketik kata kunci terlebih dahulu!");
