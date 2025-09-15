@@ -93,7 +93,7 @@ button:hover {
 #postForm input, 
 #postForm textarea, 
 #postForm select {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     margin-top: 4px;
     margin-bottom: 10px;
@@ -138,3 +138,42 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 //tabel style N
+
+
+.navbar-menu.show {
+    display: block;
+}
+
+#editForm {
+    border: 1px solid #ccc;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    max-width: 400px;
+}
+
+#editForm input, 
+#editForm textarea, 
+#editForm select {
+    width: 90%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+#editForm button {
+    button {
+    padding: 6px 12px;
+    margin-right: 6px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#editForm button:hover {
+    background: #45a049;
+}
