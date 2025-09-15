@@ -62,6 +62,27 @@
 </div>
         <!-- 🔽 Form Post Data End-->
 
+        <!-- 🔽 Form Edit Data -->
+<div id="editForm" style="display:none; margin-top:20px;">
+    <h2>Edit Data Ini</h2>
+    <label>Title:</label><br>
+    <input type="text" id="editTitle"><br><br>
+
+    <label>Description:</label><br>
+    <textarea id="editDescription"></textarea><br><br>
+
+    <label>Category:</label><br>
+    <select id="editCategory">
+        <option value="basic">Basic</option>
+        <option value="advanced">Advanced</option>
+    </select><br><br>
+
+    <button onclick="submitEdit()">Simpan Perubahan</button>
+    <button onclick="hideEditForm()">Cancel</button>
+    </div>
+        <!-- 🔽 Form Edit Data End -->
+
+
         <script src="/script.js"></script>
     </body>
 </html>
