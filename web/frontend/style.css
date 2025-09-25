@@ -1,93 +1,419 @@
-.bebek {
-    background-color: yellow;
+/* Set Quicksand as default font */
+*,
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
 }
 
-#search-container {
-    margin: 10px 0;
+:root {
+  --bg-button: #6366f1;
+  --bg-button-hover: #4e46e5db;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+  --text-accent: #6366f1;
+  --text-danger: #dc2626;
+
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  
+  --gradient-basic: linear-gradient(135deg, #6365f1a2 0%, #8a5cf6a5 100%);
+  --gradient-advance: linear-gradient(135deg, #f59f0ba5 0%, #f97416b4 100%);
+
+  --gradient-card: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
-#searchInput {
-    padding: 6px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
 
-button {
+
+  /* Light Theme Colors */
+  /* --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-header: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-input: #ffffff;
+
+  --bg-button-secondary: #f1f5f9;
+  --bg-button-secondary-hover: #e2e8f0;
+  --bg-danger: #dc2626;
+  --bg-danger-hover: #b91c1c;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+  --text-accent: #6366f1;
+  --text-danger: #dc2626;
+  
+  --border-primary: #e2e8f0;
+  --border-secondary: #cbd5e1;
+  --border-focus: #6366f1;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  --gradient-background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-card: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); */
+
+
+.fetch-button {
+    background: var(--gradient-primary);
     padding: 6px 12px;
     font-size: 14px;
     margin: 4px;
     border: none;
     border-radius: 4px;
-    background-color: #199dd2ff;
     color: white;
     cursor: pointer;
 }
-
-button:hover {
-    background-color: #199dd2ff;
+.fetch-button:hover {
+    background: var(--bg-button-hover);
 }
 
-/* Navbar styling */
-.navbar {
-    background-color: #199dd2ff;
-    padding: 10px;
-    width:250px;
-    color: white;
-    position: relative;
+/* =====================================
+    TOPBAR 
+===================================== */
+.topbar {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    color: var(  --bg-button)
 }
 
-.navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.navbar-brand {
-    font-weight: bold;
-    font-size: 16px;
-}
-
+/* =====================================
+    Hamburger dan Menu Kategori (Slide Panel)
+===================================== */
+/* Hamburger look */
 .hamburger {
-    font-size: 20px;
+    padding-left: 30px;
+    background: none;
+    border: none;
+    font-size: 28px;
     cursor: pointer;
     user-select: none;
 }
 
-.navbar-menu {
-    display: none;
-    list-style: none;
-    padding: 0;
+/* ---------- Slide-in panel (left) ---------- */
+/* Reset previous dropdown behavior: make it fixed off-canvas */
+.navbar .navbar-menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 200px;               /* lebar panel */
+    background-color: #ffffffff;  /* warna panel */
+    transform: translateX(-100%); /* offscreen */
+    transition: transform 280ms ease;
+    z-index: 1200;
+    padding: 16px 8px 16px 30px;       /* ruang atas bila perlu */
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15);
     margin: 0;
+    list-style: none;
 }
 
-.navbar-menu li {
-    background-color: #199dd2ff;
-    padding: 10px;
-    border-bottom: 1px solid #199dd2ff;
+/* Panel open state */
+.navbar .navbar-menu.show {
+    transform: translateX(0);
 }
 
-.navbar-menu li a {
-    color: white;
+/* Menu item style inside panel */
+.navbar .navbar-menu li {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 16px;
+    border-radius: 10px 10px 10px 10px;
+    font-size: 15px;
     text-decoration: none;
     display: block;
+    font-weight: 500;
 }
 
-.navbar-menu li:hover {
-    background-color: #199dd2ff;
+
+/* Algoritma dan Pemrograman — biru tua */
+.algoritma:hover {
+  background: #1e3a8a; /* blue-800 */
+  color: #ffffff;
 }
 
-/* 🔹 Tampilkan menu jika aktif */
-.navbar-menu.show {
-    display: block;
+/* Pendidikan Agama — biru muda */
+.agama:hover {
+  background: #60a5fa; /* blue-400 */
+  color: #ffffff;
+}
+
+/* Bahasa Pemrograman I — hijau tua */
+.baspro:hover {
+  background: #065f46; /* emerald-800 */
+  color: #ffffff;
+}
+
+/* Sistem Digital — hijau muda */
+.sisdig:hover {
+  background: #10b981; /* green-500 */
+  color: #ffffff;
+}
+
+/* Matematika Diskrit — kuning */
+.matdis:hover {
+  background: #fbbf24; /* amber-400 */
+  color: #000000; /* dark text for contrast on yellow */
+}
+
+/* Teknologi dan Transformasi Digital — oranye */
+.ttd:hover {
+  background: #f97316; /* orange-500 */
+  color: #ffffff;
+}
+
+/* Kalkulus — merah */
+.kalkulus:hover {
+  background: #ef4444; /* red-500 */
+  color: #ffffff;
+}
+
+/* Dasar Dasar Pemrograman — merah tua */
+.daspro:hover {
+  background: #b91c1c; /* red-700 */
+  color: #ffffff;
+}
+
+
+.top-menu {
+    padding: 16px;
+    border-bottom: 1px solid #ebe5e5ff;
+}
+
+/* =====================================
+    Search dan Tombol Post
+===================================== */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    gap: 12px;
+    padding: 20px 12px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+}
+
+#searchInput {
+    width: 400px;
+    height: 25px;
+    padding: 6px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 50px 50px 50px;
+}
+/* Grouping plus icon dan search bar */
+.search-btn {
+    font-size: 20px;
+    border: none;
+    background-color: #ffffffff;
+    color: var(--bg-button);
+}
+.search-btn:hover {
+    color: var(--bg-button-hover);
+}
+
+/* Post button (plus icon only) */
+.post-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: #ffffffff; /* sesuaikan warna */
+    color: var(--bg-button);
+    font-size: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.post-btn:hover {
+    color: var(--bg-button-hover);
+}
+
+.switch-mode{
+    display: flex;
+    justify-content: center;
+    width: 80px;
+    padding-right: 30px;
+    font-size: 25px;
+}
+
+/* =====================================
+    Tabel Data
+===================================== */
+.render-tabel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+}
+table {
+  width: 1300px;
+  border-collapse: collapse;
+  border: none;
+}
+
+thead {
+  background-color: #f9fafb;
+}
+
+th {
+    background-color: #f5f5f5ff;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  border-top: 1px solid #e5e7eb;
+}
+    
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* === Category badges: 8 mata kuliah (warna sesuai permintaan) === */
+.category-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* Algoritma dan Pemrograman — biru tua */
+.category-algoritma {
+  background: #1e3a8a; /* blue-800 */
+  color: #ffffff;
+}
+
+/* Pendidikan Agama — biru muda */
+.category-pendidikan-agama {
+  background: #60a5fa; /* blue-400 */
+  color: #ffffff;
+}
+
+/* Bahasa Pemrograman I — hijau tua */
+.category-bahasa-1 {
+  background: #065f46; /* emerald-800 */
+  color: #ffffff;
+}
+
+/* Sistem Digital — hijau muda */
+.category-sistem-digital {
+  background: #10b981; /* green-500 */
+  color: #ffffff;
+}
+
+/* Matematika Diskrit — kuning */
+.category-matematika-diskrit {
+  background: #fbbf24; /* amber-400 */
+  color: #000000; /* dark text for contrast on yellow */
+}
+
+/* Teknologi dan Transformasi Digital — oranye */
+.category-teknologi-transformasi {
+  background: #f97316; /* orange-500 */
+  color: #ffffff;
+}
+
+/* Kalkulus — merah */
+.category-kalkulus {
+  background: #ef4444; /* red-500 */
+  color: #ffffff;
+}
+
+/* Dasar Dasar Pemrograman — merah tua */
+.category-dasar-pemrograman {
+  background: #b91c1c; /* red-700 */
+  color: #ffffff;
+}
+
+/* Generic fallback (jika kategori tak terdeteksi) */
+.category-generic {
+  background: #e5e7eb;
+  color: #0f172a;
+}
+
+
+/* Action icons */
+.action-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 8px;
+}
+.action-edit {
+    color: var(  --text-tertiary);
+}
+.action-delete {
+    color: var(  --text-tertiary);
+}
+
+/* =====================================
+    Form Input 
+===================================== */
+.post-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.x-mark {
+    cursor: pointer;
+}
+.x-mark:hover {
+    color: #616161ff;
 }
 
 #postForm {
-    border: 1px solid #ccc;
-    padding: 15px;
-    background: #f9f9f9;
-    border-radius: 6px;
-    max-width: 400px;
+    background: var(--gradient-card);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    width: 1000px;
 }
 
 #postForm input, 
@@ -101,55 +427,50 @@ button:hover {
     border-radius: 4px;
 }
 
-#postForm button {
+.save-btn{
     padding: 6px 12px;
     margin-right: 6px;
-    background: #4CAF50;
+    background: var(--gradient-primary);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-#postForm button:hover {
-    background: #45a049;
-}
-/* 🔹 Tampilkan menu jika aktif N*/
-
-//tabel style
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 10px;
-}
-/* Navbar styling */
-
-th, td {
-    text-align: left;
-    padding: 8px;
+.save-btn:hover {
+    background: var(--bg-button-hover);
 }
 
-th {
-    background-color: #199dd2ff;
-    color: white;
+.cancel-btn {
+    padding: 6px 12px;
+    margin-right: 6px;
+    background: none;
+    color: black;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-//tabel style N
-
-
-.navbar-menu.show {
-    display: block;
+.cancel-btn:hover {
+    background: #f9fafb;
 }
 
+/* =====================================
+    Form edit
+===================================== */
+.edit-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+}
 #editForm {
-    border: 1px solid #ccc;
-    padding: 15px;
-    background: #f9f9f9;
-    border-radius: 6px;
-    max-width: 400px;
+    background: var(--gradient-card);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    width: 1000px;
 }
 
 #editForm input, 
@@ -163,17 +484,3 @@ tr:nth-child(even) {
     border-radius: 4px;
 }
 
-#editForm button {
-    button {
-    padding: 6px 12px;
-    margin-right: 6px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#editForm button:hover {
-    background: #45a049;
-}
