@@ -1,88 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">    
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
-        <title>My C++ Server</title>
-        <link rel="stylesheet" type="text/css" href="/style.css">
-        <script src="/script.js"></script>
-    </head>
-    <body>
-        <h1>Hello from C++ WinSock HTTP Server!</h1>
-        <p class="bebek">This is a simple HTTP server implemented in C++ using WinSock.</p>
-        <link rel="stylesheet" type="text/css" href="/style.css">
-        <!-- 🔍 Search Bar -->
-        <div id="search-container">
-            <input type="text" id="searchInput" placeholder="Ketik kata kunci...">
-            <button onclick="searchData()">Search</button>
-        </div>
-        <!-- 🔍 Search Bar End-->
-        
-        <!-- 🔽 Navigation Bar -->
-        <nav class="navbar">
-        <div class="navbar-container">
-            <span class="navbar-brand">Menu</span>
-            <span class="hamburger" onclick="toggleMenu()">☰</span>
-        </div>
-        <ul class="navbar-menu" id="navbarMenu">
-            <li><a href="#" onclick="categoryData('basic')">Kategori: Basic</a></li>
-            <li><a href="#" onclick="categoryData('advanced')">Kategori: Advanced</a></li>
-            <li><a href="#" onclick="showPostForm()">➕ Post Data</a></li>
-        </ul>
-        </nav>
-        <!-- 🔽 Navigation Bar End-->
-
-        <button onclick="fetchData()">Fetch Data</button>
-        <button onclick="fetchtest()">Fetch test</button>
-        <button onclick="searchData()">Search Test</button>
-        <button onclick="categoryData()">Category Test</button>
-        <button onclick="postData()">Post Test</button>
-        <button onclick="putData()">Put Test</button>
-        <button onclick="deleteData()">Delete Test</button>
-        <p id="urah"></p>
-
-        <!-- 🔽 Form Post Data -->
-<div id="postForm" style="display:none; margin-top:20px;">
-    <h2>Tambah Data Baru</h2>
-    <label>Title:</label><br>
-    <input type="text" id="postTitle"><br><br>
-
-    <label>Description:</label><br>
-    <textarea id="postDescription"></textarea><br><br>
-
-    <label>Category:</label><br>
-    <select id="postCategory">
-        <option value="basic">Basic</option>
-        <option value="advanced">Advanced</option>
-    </select><br><br>
-
-    <button onclick="submitPost()">Submit</button>
-    <button onclick="hidePostForm()">Cancel</button>
-</div>
-        <!-- 🔽 Form Post Data End-->
-
-        <!-- 🔽 Form Edit Data -->
-<div id="editForm" style="display:none; margin-top:20px;">
-    <h2>Edit Data Ini</h2>
-    <label>Title:</label><br>
-    <input type="text" id="editTitle"><br><br>
-
-    <label>Description:</label><br>
-    <textarea id="editDescription"></textarea><br><br>
-
-    <label>Category:</label><br>
-    <select id="editCategory">
-        <option value="basic">Basic</option>
-        <option value="advanced">Advanced</option>
-    </select><br><br>
-
-    <button onclick="submitEdit()">Simpan Perubahan</button>
-    <button onclick="hideEditForm()">Cancel</button>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>My C++ Server</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="topbar">
+      <h1>WELCOME TO ....</h1>
     </div>
-        <!-- 🔽 Form Edit Data End -->
+    <!-- Topbar: hamburger kiri, search tengah, post-icon kanan -->
+    <div class="header">
+      <div class="hamburger">
+        <nav class="navbar">
+          <span onclick="toggleMenu()" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+          </span>
+          <!-- Panel kategori (slide dari kiri) -->
+          <ul class="navbar-menu" id="navbarMenu">
+            <h5 class="top-menu">Kategori</h5>
+              <li class="algoritma" href="#" onclick="categoryData('Algoritma dan Pemrograman')">Algoritma dan Pemrograman</li>
+              <li class="agama" href="#" onclick="categoryData('Pendidikan Agama')">Pendidikan Agama</li>
+              <li class="baspro" href="#" onclick="categoryData('Bahasa Pemrograman I')">Bahasa Pemrograman I</li>
+              <li class="sisdig" href="#" onclick="categoryData('Sistem Digital')">Sistem Digital</li>
+              <li class="matdis" href="#" onclick="categoryData('Matematika Diskrit')">Matematika Diskrit</li>
+              <li class="ttd" href="#" onclick="categoryData('Teknologi dan Transformasi Digital')">Teknologi dan Transformasi Digital</li>
+              <li class="kalkulus" href="#" onclick="categoryData('Kalkulus')">Kalkulus</li>
+              <li class="daspro" href="#" onclick="categoryData('Dasar Dasar Pemrograman')">Dasar Dasar Pemrograman</li>
+          </ul>
+        </nav>
+      </div>
 
+      <!-- seach input, search button, post button -->
+      <div class="search-group">
+        <button class="fetch-button" onclick="fetchData()">All items</button>
+        <input type="text" id="searchInput" placeholder="Ketik kata kunci..." />
+        <button class="search-btn" onclick="searchData()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <button class="post-btn" onclick="showPostForm()" aria-label="Post">
+          +
+        </button>
+      </div>
 
-        <script src="/script.js"></script>
-    </body>
+      <div class="switch-mode">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+      </div>
+    </div>
+    <!-- Topbar: hamburger kiri, search tengah, post-icon kanan end-->
+
+    <div  class="render-tabel">
+      <p id="urah"></p>
+    </div>
+
+    <!-- 🔽 Form Post Data -->
+    <div class="post-form">
+      <div id="postForm" style="display: none; margin-top: 20px">
+        <div class="form-header">
+          <h2>Tambah Data Baru</h2>
+          <i class="fa-solid fa-xmark x-mark" onclick="hidePostForm()"></i>
+        </div>
+
+        <label>Title:</label><br />
+        <input type="text" id="postTitle" /><br /><br />
+
+        <label>Description:</label><br />
+        <textarea id="postDescription"></textarea><br /><br />
+
+        <label>Category:</label><br />
+        <select id="postCategory">
+            <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
+            <option value="Pendidikan Agama">Pendidikan Agama</option>
+            <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
+            <option value="Sistem Digital">Sistem Digital</option>
+            <option value="Matematika Diskrit">Matematika Diskrit</option>
+            <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
+            <option value="Kalkulus">Kalkulus</option>
+            <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
+        </select>
+        <br /><br />
+
+        <button class="save-btn" onclick="submitPost()">
+          <i class="fa-regular fa-floppy-disk"></i> Simpan
+        </button>
+        <button class="cancel-btn" onclick="hidePostForm()">Cancel</button>
+      </div>
+    </div>
+    <!-- 🔽 Form Post Data End-->
+
+    <!-- 🔽 Form Edit Data -->
+    <div class="edit-form">
+      <div id="editForm" style="display: none; margin-top: 20px">
+        <div class="form-header">
+          <h2>Edit Data Ini</h2>
+          <i class="fa-solid fa-xmark x-mark" onclick="hideEditForm();"></i>
+        </div>
+
+        <label>Title:</label><br />
+        <input type="text" id="editTitle" /><br /><br />
+
+        <label>Description:</label><br />
+        <textarea id="editDescription"></textarea><br /><br />
+
+        <label>Category:</label><br />
+        <select id="editCategory">
+            <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
+            <option value="Pendidikan Agama">Pendidikan Agama</option>
+            <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
+            <option value="Sistem Digital">Sistem Digital</option>
+            <option value="Matematika Diskrit">Matematika Diskrit</option>
+            <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
+            <option value="Kalkulus">Kalkulus</option>
+            <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
+        </select>
+        <br /><br />
+
+        <button class="save-btn" onclick="submitEdit()">
+          <i class="fa-regular fa-floppy-disk"></i> Simpan
+        </button>
+        <button class="cancel-btn" onclick="hideEditForm()">Cancel</button>
+      </div>
+    </div>
+    <!-- 🔽 Form Edit Data End -->
+
+    <script src="/script.js"></script>
+  </body>
 </html>
