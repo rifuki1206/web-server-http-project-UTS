@@ -20,6 +20,8 @@ function toggleMenu() {
 function categoryData(category) {
   hidePostForm();
   hideEditForm();
+  const menu = document.getElementById("navbarMenu");
+    if (menu && menu.classList.contains("show")) menu.classList.remove("show");
     fetch(`/?tag=${category}`)
         .then(response => response.json())
         .then(data => {
@@ -32,6 +34,33 @@ function categoryData(category) {
 }
 // Toggle hamburger menu N
 
+// Tutup panel ketika klik di luar
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById("navbarMenu");
+    const hamburger = document.querySelector('.hamburger');
+    if (!menu || !hamburger) return;
+
+    if (menu.classList.contains('show')) {
+        // jika klik bukan di menu dan bukan di hamburger maka tutup
+        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+            menu.classList.remove('show');
+        }
+    }
+});
+// Tutup panel ketika klik di luar
+
+// mapping kategori (teks) ke nama class CSS badge
+const CATEGORY_CLASS_MAP = {
+  "Algoritma dan Pemrograman": "category-algoritma",
+  "Pendidikan Agama": "category-pendidikan-agama",
+  "Bahasa Pemrograman I": "category-bahasa-1",
+  "Sistem Digital": "category-sistem-digital",
+  "Matematika Diskrit": "category-matematika-diskrit",
+  "Teknologi dan Transformasi Digital": "category-teknologi-transformasi",
+  "Kalkulus": "category-kalkulus",
+  "Dasar Dasar Pemrograman": "category-dasar-pemrograman"
+};
+
 // Fungsi tambahan untuk membuat tabel HTML
 function renderTable(data) {
   if (!data || !data.data) {
@@ -42,24 +71,25 @@ function renderTable(data) {
   let table = `
         <table border="1" cellpadding="8" cellspacing="0">
             <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Actions</th>
+                <th>TITLE</th>
+                <th>DESCRIPTION</th>
+                <th>CATEGORY</th>
+                <th>ACTIONS</th>
             </tr>
     `;
 
   data.data.forEach((item) => {
+    const badgeClass = CATEGORY_CLASS_MAP[item.category] || 'category-generic';
     table += `
-            <tr>
-                <td>${item.title}</td>
-                <td>${item.description}</td>
-                <td>${item.category}</td>
-                <td>
-                    <button onclick='editItem(${JSON.stringify(item)})'>Edit</button>
-                    <button onclick='deleteItem(${JSON.stringify(item.title)})'>Delete</button>
-                </td>
-            </tr>
+          <tr>
+            <td>${item.title}</td>
+            <td>${item.description}</td>
+            <td><span class="category-badge ${badgeClass}">${item.category}</span></td>
+            <td>
+              <button class="action-btn action-edit" onclick='editItem(${JSON.stringify(item)})'><i class="fa-regular fa-pen-to-square"></i></button>
+              <button class="action-btn action-delete" onclick='deleteItem(${JSON.stringify(item.title)})'><i class="fa-regular fa-trash-can"></i></button>
+            </td>
+          </tr>
         `;
   });
 
@@ -79,7 +109,9 @@ function showPostForm() {
 
     if (titleEl) titleEl.value = "";
     if (descEl) descEl.value = "";
-    if (catEl) catEl.value = "basic"; // set default category jika ingin
+    if (catEl) catEl.selectedIndex = 0; // pilih opsi pertama
+
+    // if (catEl) catEl.value = "basic"; // set default category jika ingin
 
     document.getElementById("postForm").style.display = "block";
 }
@@ -125,6 +157,7 @@ function submitPost() {
       if (titleEl) titleEl.value = "";
       if (descEl) descEl.value = "";
       if (catEl) catEl.value = "basic";
+      // if (catEl) catEl.value = "basic";
 
         hidePostForm();
         renderTable(result); // tampilkan data terbaru
@@ -139,6 +172,9 @@ function submitPost() {
 // 🔄 form edit data
 function editItem(item) {
   hidePostForm();
+  // tutup panel kategori agar UI bersih
+    const menu = document.getElementById("navbarMenu");
+    if (menu && menu.classList.contains("show")) menu.classList.remove("show");
     document.getElementById("editForm").style.display = "block";
     document.getElementById("editTitle").value = item.title;
     document.getElementById("editDescription").value = item.description;
@@ -188,9 +224,9 @@ function submitEdit() {
     alert("Terjadi kesalahan saat mengubah data.");
   });
 }
-//form edit data N
+//🔄form edit data N
 
-// 🔥 Delete data QQQQQ
+// Delete data
 function deleteItem(title) {
   if (!confirm(`Hapus item "${title}"?`)) return;
 
@@ -225,7 +261,7 @@ function escapeHtml(text) {
 }
 // 🔒 Escape untuk keamanan (mencegah XSS) N
 
-//fetchData baru
+//fetchData
 function fetchData() {
   fetch("/?")
     .then((response) => response.json())
@@ -236,7 +272,7 @@ function fetchData() {
       console.error("Error fetching data:", error);
     });
 }
-//fetchData baru N
+//fetchData  N
 
 function fetchtest() {
   fetch("/?tag=basic&?search=a")
@@ -250,7 +286,7 @@ function fetchtest() {
     });
 }
 
-//searchData baru
+//searchData
 function searchData() {
   hidePostForm();
   hideEditForm();
@@ -273,62 +309,4 @@ function searchData() {
         "Terjadi kesalahan saat mencari data.";
     });
 }
-//searchData baru N
-
-function postData() {
-  const data = {
-    title: "pantea",
-    description: "Description for item pantea",
-    category: "basic",
-  }; // Ganti dengan data yang ingin dikirim
-  fetch("/submit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      renderTable(data);
-      // Lakukan sesuatu dengan data yang diterima
-    })
-    .catch((error) => {
-      console.error("Error posting data:", error);
-    });
-}
-function putData() {
-  const data = {
-    title: "pantea",
-    description: "Updated description for item pantea",
-    category: "basic",
-  };
-  fetch("/update/pantea", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      renderTable(data);
-      // Lakukan sesuatu dengan data yang diterima
-    })
-    .catch((error) => {
-      console.error("Error updating data:", error);
-    });
-}
-function deleteData() {
-  fetch("/delete/pantea", {
-    method: "DELETE",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      renderTable(data);
-      // Lakukan sesuatu dengan data yang diterima
-    })
-    .catch((error) => {
-      console.error("Error deleting data:", error);
-    });
-}
+//searchData N
