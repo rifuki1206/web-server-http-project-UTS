@@ -1,5 +1,6 @@
 // Jalankan pencarian ketika user tekan Enter di search bar
 document.addEventListener("DOMContentLoaded", () => {
+    fetchData();
     const searchInput = document.getElementById("searchInput");
     if (searchInput) {
         searchInput.addEventListener("keydown", function(event) {
@@ -60,6 +61,17 @@ const CATEGORY_CLASS_MAP = {
   "Kalkulus": "category-kalkulus",
   "Dasar Dasar Pemrograman": "category-dasar-pemrograman"
 };
+
+// Toggle Light/Dark Mode
+document.addEventListener("DOMContentLoaded", () => {
+  const switchModeBtn = document.getElementById("switchMode");
+  if (switchModeBtn) {
+    switchModeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-theme");
+    });
+  }
+});
+
 
 // Fungsi tambahan untuk membuat tabel HTML
 function renderTable(data) {
@@ -160,6 +172,7 @@ function submitPost() {
       // if (catEl) catEl.value = "basic";
 
         hidePostForm();
+        fetchData();
         renderTable(result); // tampilkan data terbaru
     })
     .catch(error => {
@@ -227,31 +240,90 @@ function submitEdit() {
 //🔄form edit data N
 
 // Delete data
-function deleteItem(title) {
-  if (!confirm(`Hapus item "${title}"?`)) return;
+let itemToDelete = null;
 
-  fetch(encodeURIComponent(`delete/${title}`), {
-        method: 'DELETE'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Server error ' + response.status);
-        }
-        return response.json();
-    })
-    .then(result => {
-        if (result.message) {
-            alert(result.message);
-        } else {
-            alert('Item berhasil dihapus');
-        }
-        fetchData(); // Refresh tabel
-    })
-    .catch(err => {
-        console.error('Gagal menghapus:', err);
-        alert('Gagal menghapus item. Cek console untuk detail.');
-    });
+function deleteItem(title) {
+  itemToDelete = title;
+  const modal = document.getElementById("deleteModal");
+  const message = document.getElementById("deleteMessage");
+
+  // Update teks modal dengan judul item
+  message.innerHTML = `
+    Apakah anda yakin ingin menghapus data <strong>"${title}"</strong>? 
+    <br><strong>Data yang dihapus tidak bisa dipulihkan!</strong>
+  `;
+
+  modal.classList.add("show");
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("deleteModal");
+  const confirmBtn = document.getElementById("confirmDeleteBtn");
+  const cancelBtn = document.getElementById("cancelDeleteBtn");
+
+  confirmBtn.addEventListener("click", () => {
+    if (itemToDelete) {
+      // pindahkan logika fetch delete lama ke sini
+      fetch(encodeURIComponent(`delete/${itemToDelete}`), {
+        method: 'DELETE'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Server error ' + response.status);
+          }
+          return response.json();
+        })
+        .then(result => {
+          if (result.message) {
+            alert(result.message);
+          } else {
+            alert('Item berhasil dihapus');
+          }
+          fetchData(); // refresh tabel
+        })
+        .catch(err => {
+          console.error('Gagal menghapus:', err);
+          alert('Gagal menghapus item. Cek console untuk detail.');
+        });
+    }
+
+    itemToDelete = null;              // reset judul
+    modal.classList.remove("show");   // tutup modal
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    itemToDelete = null;
+    modal.classList.remove("show");   // tutup modal tanpa hapus
+  });
+});
+
+
+// function deleteItem(title) {
+//   if (!confirm(`Hapus item "${title}"?`)) return;
+
+//   fetch(encodeURIComponent(`delete/${title}`), {
+//         method: 'DELETE'
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Server error ' + response.status);
+//         }
+//         return response.json();
+//     })
+//     .then(result => {
+//         if (result.message) {
+//             alert(result.message);
+//         } else {
+//             alert('Item berhasil dihapus');
+//         }
+//         fetchData(); // Refresh tabel
+//     })
+//     .catch(err => {
+//         console.error('Gagal menghapus:', err);
+//         alert('Gagal menghapus item. Cek console untuk detail.');
+//     });
+// }
 // Delete data N
 
 // 🔒 Escape untuk keamanan (mencegah XSS)QQQQQ
