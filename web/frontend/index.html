@@ -21,122 +21,143 @@
     />
   </head>
   <body>
-    <div class="topbar">
-      <h1>WELCOME TO ....</h1>
-    </div>
-    <!-- Topbar: hamburger kiri, search tengah, post-icon kanan -->
-    <div class="header">
-      <div class="hamburger">
-        <nav class="navbar">
-          <span onclick="toggleMenu()" aria-label="Menu">
-            <i class="fa-solid fa-bars"></i>
-          </span>
-          <!-- Panel kategori (slide dari kiri) -->
-          <ul class="navbar-menu" id="navbarMenu">
-            <h5 class="top-menu">Kategori</h5>
-              <li class="algoritma" href="#" onclick="categoryData('Algoritma dan Pemrograman')">Algoritma dan Pemrograman</li>
-              <li class="agama" href="#" onclick="categoryData('Pendidikan Agama')">Pendidikan Agama</li>
-              <li class="baspro" href="#" onclick="categoryData('Bahasa Pemrograman I')">Bahasa Pemrograman I</li>
-              <li class="sisdig" href="#" onclick="categoryData('Sistem Digital')">Sistem Digital</li>
-              <li class="matdis" href="#" onclick="categoryData('Matematika Diskrit')">Matematika Diskrit</li>
-              <li class="ttd" href="#" onclick="categoryData('Teknologi dan Transformasi Digital')">Teknologi dan Transformasi Digital</li>
-              <li class="kalkulus" href="#" onclick="categoryData('Kalkulus')">Kalkulus</li>
-              <li class="daspro" href="#" onclick="categoryData('Dasar Dasar Pemrograman')">Dasar Dasar Pemrograman</li>
-          </ul>
-        </nav>
-      </div>
-
-      <!-- seach input, search button, post button -->
-      <div class="search-group">
-        <button class="fetch-button" onclick="fetchData()">All items</button>
-        <input type="text" id="searchInput" placeholder="Ketik kata kunci..." />
-        <button class="search-btn" onclick="searchData()">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-        <button class="post-btn" onclick="showPostForm()" aria-label="Post">
-          +
-        </button>
-      </div>
-
-      <div class="switch-mode">
-        <i class="fa-solid fa-circle-half-stroke"></i>
-      </div>
-    </div>
-    <!-- Topbar: hamburger kiri, search tengah, post-icon kanan end-->
-
-    <div  class="render-tabel">
-      <p id="urah"></p>
-    </div>
-
-    <!-- 🔽 Form Post Data -->
-    <div class="post-form">
-      <div id="postForm" style="display: none; margin-top: 20px">
-        <div class="form-header">
-          <h2>Tambah Data Baru</h2>
-          <i class="fa-solid fa-xmark x-mark" onclick="hidePostForm()"></i>
+    <div class="body-wrapper">
+      <div class="topbar">
+        <div class="welcome">
+          <h1>WELCOME TO ....</h1>
         </div>
+        <!-- Topbar: hamburger kiri, search tengah, post-icon kanan -->
+        <div class="header">
+            <nav class="navbar">
+              <button onclick="toggleMenu()" aria-label="Menu" class="hamburger">
+                <i class="fa-solid fa-bars" style="background: none;"></i>
+              </button>
+              <!-- Panel kategori (slide dari kiri) -->
+              <ul class="navbar-menu" id="navbarMenu">
+                <h5 class="top-menu">Kategori</h5>
+                  <li class="alpro" href="#" onclick="categoryData('Algoritma dan Pemrograman')">Algoritma dan Pemrograman</li>
+                  <li class="agama" href="#" onclick="categoryData('Pendidikan Agama')">Pendidikan Agama</li>
+                  <li class="baspro" href="#" onclick="categoryData('Bahasa Pemrograman I')">Bahasa Pemrograman I</li>
+                  <li class="sisdig" href="#" onclick="categoryData('Sistem Digital')">Sistem Digital</li>
+                  <li class="matdis" href="#" onclick="categoryData('Matematika Diskrit')">Matematika Diskrit</li>
+                  <li class="ttd" href="#" onclick="categoryData('Teknologi dan Transformasi Digital')">Teknologi dan Transformasi Digital</li>
+                  <li class="kalkulus" href="#" onclick="categoryData('Kalkulus')">Kalkulus</li>
+                  <li class="daspro" href="#" onclick="categoryData('Dasar Dasar Pemrograman')">Dasar Dasar Pemrograman</li>
+              </ul>
+            </nav>
 
-        <label>Title:</label><br />
-        <input type="text" id="postTitle" /><br /><br />
+          <!-- seach input, search button, post button -->
+          <div class="search-group">
+            <button class="fetch-button" onclick="fetchData()">All items</button>
+            <input type="text" class="search-input" id="searchInput" placeholder="Ketik kata kunci..." />
+            <button class="search-btn" onclick="searchData()">
+              <i class="fa-solid fa-magnifying-glass" style="background: none;"></i>
+            </button>
+            <button class="post-btn" onclick="showPostForm()" aria-label="Post">
+              +
+            </button>
+          </div>
 
-        <label>Description:</label><br />
-        <textarea id="postDescription"></textarea><br /><br />
-
-        <label>Category:</label><br />
-        <select id="postCategory">
-            <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
-            <option value="Pendidikan Agama">Pendidikan Agama</option>
-            <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
-            <option value="Sistem Digital">Sistem Digital</option>
-            <option value="Matematika Diskrit">Matematika Diskrit</option>
-            <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
-            <option value="Kalkulus">Kalkulus</option>
-            <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
-        </select>
-        <br /><br />
-
-        <button class="save-btn" onclick="submitPost()">
-          <i class="fa-regular fa-floppy-disk"></i> Simpan
-        </button>
-        <button class="cancel-btn" onclick="hidePostForm()">Cancel</button>
-      </div>
-    </div>
-    <!-- 🔽 Form Post Data End-->
-
-    <!-- 🔽 Form Edit Data -->
-    <div class="edit-form">
-      <div id="editForm" style="display: none; margin-top: 20px">
-        <div class="form-header">
-          <h2>Edit Data Ini</h2>
-          <i class="fa-solid fa-xmark x-mark" onclick="hideEditForm();"></i>
+          <div class="switch-mode" id="switchMode">
+              <i class="fa-solid fa-circle-half-stroke"></i>
+          </div>
         </div>
+        <!-- Topbar: hamburger kiri, search tengah, post-icon kanan end-->
+      </div>
+      
 
-        <label>Title:</label><br />
-        <input type="text" id="editTitle" /><br /><br />
 
-        <label>Description:</label><br />
-        <textarea id="editDescription"></textarea><br /><br />
+      <!-- 🔽 Form Post Data -->
+      <div class="form-wrapper">
+        <div id="postForm" class="form-card" style="display: none; margin-top: 20px">
+          <div class="form-header">
+            <h2>Tambah Data Baru</h2>
+            <i class="fa-solid fa-xmark x-mark" onclick="hidePostForm()"></i>
+          </div>
 
-        <label>Category:</label><br />
-        <select id="editCategory">
-            <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
-            <option value="Pendidikan Agama">Pendidikan Agama</option>
-            <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
-            <option value="Sistem Digital">Sistem Digital</option>
-            <option value="Matematika Diskrit">Matematika Diskrit</option>
-            <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
-            <option value="Kalkulus">Kalkulus</option>
-            <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
-        </select>
-        <br /><br />
+          <label>Title:</label><br />
+          <input type="text" id="postTitle" /><br /><br />
 
-        <button class="save-btn" onclick="submitEdit()">
-          <i class="fa-regular fa-floppy-disk"></i> Simpan
-        </button>
-        <button class="cancel-btn" onclick="hideEditForm()">Cancel</button>
+          <label>Description:</label><br />
+          <textarea id="postDescription"></textarea><br /><br />
+
+          <label>Category:</label><br />
+          <select id="postCategory">
+              <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
+              <option value="Pendidikan Agama">Pendidikan Agama</option>
+              <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
+              <option value="Sistem Digital">Sistem Digital</option>
+              <option value="Matematika Diskrit">Matematika Diskrit</option>
+              <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
+              <option value="Kalkulus">Kalkulus</option>
+              <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
+          </select>
+          <br /><br />
+
+          <button class="save-btn" onclick="submitPost()">
+            <i class="fa-regular fa-floppy-disk"></i> Simpan
+          </button>
+          <button class="cancel-btn" onclick="hidePostForm()">Cancel</button>
+        </div>
+      <!-- 🔽 Form Post Data End-->
+
+      <!-- 🔽 Form Edit Data -->
+        <div id="editForm" class="form-card" style="display: none; margin-top: 20px">
+          <div class="form-header">
+            <h2>Edit Data Ini</h2>
+            <i class="fa-solid fa-xmark x-mark" onclick="hideEditForm();"></i>
+          </div>
+
+          <label>Title:</label><br />
+          <input type="text" id="editTitle" /><br /><br />
+
+          <label>Description:</label><br />
+          <textarea id="editDescription"></textarea><br /><br />
+
+          <label>Category:</label><br />
+          <select id="editCategory">
+              <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
+              <option value="Pendidikan Agama">Pendidikan Agama</option>
+              <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
+              <option value="Sistem Digital">Sistem Digital</option>
+              <option value="Matematika Diskrit">Matematika Diskrit</option>
+              <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
+              <option value="Kalkulus">Kalkulus</option>
+              <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
+          </select>
+          <br /><br />
+
+          <button class="save-btn" onclick="submitEdit()">
+            <i class="fa-regular fa-floppy-disk"></i> Simpan
+          </button>
+          <button class="cancel-btn" onclick="hideEditForm()">Cancel</button>
+        </div>
+      </div>
+      <!-- 🔽 Form Edit Data End -->
+
+      
+      <div  class="render-tabel">
+        <p id="urah"></p>
       </div>
     </div>
-    <!-- 🔽 Form Edit Data End -->
+
+        <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <i class="fa-regular fa-trash-can"></i>
+          <h2>Hapus Data</h2>
+        </div>
+        <p id="deleteMessage" class="modal-message">
+          Apakah anda yakin ingin menghapus data ini? 
+          <br><strong>Data yang dihapus tidak bisa dipulihkan!</strong>
+        </p>
+        <div class="modal-actions">
+          <button id="confirmDeleteBtn" class="btn btn-delete">Delete</button>
+          <button id="cancelDeleteBtn" class="btn btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
 
     <script src="/script.js"></script>
   </body>
