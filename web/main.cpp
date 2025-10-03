@@ -1,9 +1,14 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iostream>
+#include <thread>
 #include "fileEdit.hpp"
+#include "pengepul.hpp"
 #include "httpParser.hpp"
 #pragma comment(lib, "ws2_32.lib")
+void print_full(const std::string& s) {
+    std::cout.write(s.data(), static_cast<std::streamsize>(s.size()));
+}
 
 int main() {
     WSADATA wsaData;
@@ -37,40 +42,58 @@ int main() {
         WSACleanup();
         return 1;
     }
-
-    std::cout << "HTTP Server running on http://127.0.0.1:8080\n";
-
+    u_long a=1;
+    ioctlsocket(serverSocket,FIONBIO,&a);
+    std::cout << "HTTP Server running on http://127.0.0.1:8080 \n";
+    
+    bool clientbaru=false;
     while (true) {
-        sockaddr_in clientAddr{};
-        int clientSize = sizeof(clientAddr);
-        SOCKET clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &clientSize);
-        if (clientSocket == INVALID_SOCKET) {
-            std::cerr << "Accept failed. Error: " << WSAGetLastError() << "\n";
-            continue;
+        SOCKET clientSocket;
+        
+            sockaddr_in clientAddr{};
+            int clientSize = sizeof(clientAddr);
+            clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &clientSize);
+            if (clientSocket == INVALID_SOCKET) {
+                int erro=WSAGetLastError();
+                if(erro==WSAEWOULDBLOCK){
+                    continue;
+                }else{
+                    std::cerr << "Accept failed. Error: " << WSAGetLastError() << "\n";
+                    continue;
+                }
+            }
+        std::cout<<"asep";
+        httpresponse kirim;
+        while(!clientbaru){
+            char buffer[1024*4];
+            int bytesReceived = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+            globaltimer++;
+            
+            if (bytesReceived > 0) {
+                buffer[bytesReceived] = '\0';
+                std::cout<<"byte:"<<bytesReceived<<"\ndata:\n";
+                std::string requestStr(buffer,bytesReceived);
+                print_full(requestStr);
+                std::cout<<"\n";
+                // HTTP response sederhana
+                clientbaru=pengepulan(requestStr,kirim);
+            }
+            if(globaltimer>600){
+                globaltimer=0;
+                clientbaru=true;
+            }
         }
-
-        char buffer[1024];
-        int bytesReceived = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-        if (bytesReceived > 0) {
-            buffer[bytesReceived] = '\0';
-            std::cout << "Request:\n" << buffer << "\n";
-            std::string requestStr(buffer);
-            // HTTP response sederhana
-            const char* httpResponse =
-                "HTTP/1.1 200 OK\r\n"
-                "Content-Type: text/html\r\n"
-                "Connection: close\r\n"
-                "\r\n"
-                "<!DOCTYPE html>"
-                "<html><head><title>My C++ Server</title></head>"
-                "<body><h1>Hello from C++ WinSock HTTP Server!</h1></body></html>"
-                "<link rel=\"stylesheet\" type=\"text/css\" href=\"/style.css\"> <script src=\"/script.js\"></script>";
-            std::string kirim = responsfunc(requestStr);
-            std::cout << "Response:\n" << kirim << "\n";
-            send(clientSocket, kirim.c_str(), (int)kirim.length(), 0);
+        std::vector<std::string> pengiriman=cacahan(kirim);
+        for (size_t i = 0; i < pengiriman.size(); i++)
+        {
+            /* code */
+            std::cout << "Response:\n" << pengiriman[i] << "\n";
+            send(clientSocket, pengiriman[i].c_str(), (int)pengiriman[i].length(), 0);
         }
-
+        
+        
         closesocket(clientSocket);
+        clientbaru=false;
     }
 
     closesocket(serverSocket);
