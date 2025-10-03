@@ -16,7 +16,17 @@ struct httpRequest
     std::string version;
     std::string koneksi;
     std::string contentType;
+    unsigned long long size;
     std::string body;
+    void bersihkan(){
+        this->method.clear();
+        this->uri.clear();
+        this->version.clear();
+        this->koneksi.clear();
+        this->contentType.clear();
+        this->body.clear();
+        this->size=0;
+    }
 };
 inline char hekstochar(std::array<char, 2> hex)
 {
@@ -64,6 +74,7 @@ namespace httpParser
     {
         // Implementasi parsing request HTTP
         httpRequest req;
+        req.size=0;
         std::string header = msg.substr(0, msg.find("\r\n\r\n")); // Hanya ambil header saja
         std::string body = msg.substr(msg.find("\r\n\r\n") + 4);   // Ambil body setelah header
 
@@ -78,6 +89,7 @@ namespace httpParser
                 req.method = "GET";
                 req.uri = line.substr(4, line.find(" ", 4) - 4);
                 req.version = line.substr(line.find(" ", 4) + 1);
+                
             }else if(line.find("POST") == 0)
             {
                 req.method = "POST";
@@ -93,28 +105,33 @@ namespace httpParser
                 req.method = "DELETE";
                 req.uri = line.substr(7, line.find(" ", 7) - 7);
                 req.version = line.substr(line.find(" ", 7) + 1);
+                
             }else if (line.find("Content-Type:") == 0)
             {
                 req.contentType = line.substr(14);
             }else if (line.find("Connection:") == 0)
             {
                 req.koneksi = line.substr(12);
+            }else if(line.find("Content-Length:")==0)
+            {
+                req.size=stoull(line.substr(16));
             }
             
         }
         req.body = body;
         return req;
     }
-    nlohmann::json bodytojson(const httpRequest& req)
+    inline bool bodytojson(const httpRequest& req,nlohmann::json& jsobj)
     {
-        nlohmann::json jsonBody;
-        jsonBody = nlohmann::json::parse(req.body);
-        return jsonBody;
+        if(req.body.length()){
+            jsobj = nlohmann::json::parse(req.body);
+            return true;
+        }
+        return false;
     }
 } // namespace httpParser
-std::string responsfunc(std::string msg){
-    httpRequest req = httpParser::parser(msg);
-    std::string response;
+httpresponse responsfunc(httpRequest req){
+    httpresponse response;
     std::string decodedUri = uridecoder(req.uri);
     req.uri = decodedUri;
     if (req.method == "GET")
@@ -186,9 +203,11 @@ std::string responsfunc(std::string msg){
                 break;
             default:
                 // Tidak ada pencarian, kembalikan semua data
-                response = httpHeader::getResponseHeadersJson();
+                //response = httpHeader::getResponseHeadersJson();
                 nlohmann::json jsonResponse=nlohmann::json::parse(fileEdit::readFile("database/data.json"));
-                return response + jsonResponse.dump();
+                //return response + jsonResponse.dump();
+                response.pembentukan(contentType::json,false,jsonResponse.dump().size(),jsonResponse.dump(),false);
+                return response;
             }
             
             if(idss.size() != 0){
@@ -196,61 +215,75 @@ std::string responsfunc(std::string msg){
                 //response = httpHeader::getResponseHeadersJson();
                 nlohmann::json jsonResponse=nlohmann::json::parse(fileEdit::readFile("database/data.json"));
                 nlohmann::json filteredResults;
-                response = httpHeader::getResponseHeadersJson();
+                //response = httpHeader::getResponseHeadersJson();
                 for (const auto& id : idss)
                 {
                     filteredResults["data"].push_back(jsonResponse["data"][id]);
                 }
-                response += filteredResults.dump();
+                //response += filteredResults.dump();
+                return response.pembentukan(contentType::json,false,filteredResults.dump().size(),filteredResults.dump(),false);
             }else{
-                response = httpHeader::getResponseHeadersJson();
-                response += "{\"message\": \"No results found.\"}";
+                //response = httpHeader::getResponseHeadersJson();
+                //response += "{\"message\": \"No results found.\"}";
+                std::string abb="{\"error\":\"No results found.\"}";
+                return response.pembentukan(contentType::json,true,abb.size(),abb,false);
             }
         }
         else if(req.uri == "/")
         {
             // Buat response untuk permintaan GET /index.html
-           response =httpHeader::getResponseHeadersHtml();
+           //response =httpHeader::getResponseHeadersHtml();
            if(fileEdit::checkFileExists("frontend/index.html"))
            {
-               response += fileEdit::readFile("frontend/index.html");
+               //response += fileEdit::readFile("frontend/index.html");
+               std::string aba=fileEdit::readFile("frontend/index.html");
+               return response.pembentukan(contentType::html,false,aba.size(),aba,false);
            }else{
-               response += "<h1>File index.html tidak ditemukan</h1>";
+               const std::string par= "<h1>File index.html tidak ditemukan</h1>";
+               return response.pembentukan(contentType::html,true,par.size(),par,false);
            }
         }else if(req.uri.rfind(".html") == req.uri.length() - 5)
         {
-            response = httpHeader::getResponseHeadersHtml();
+            //response = httpHeader::getResponseHeadersHtml();
             if(fileEdit::checkFileExists("frontend/"+req.uri.substr(1)))
            {
-               response += fileEdit::readFile("frontend/"+req.uri.substr(1));
+               std::string aba=fileEdit::readFile("frontend/"+req.uri.substr(1));
+               return response.pembentukan(contentType::html,false,aba.size(),aba,false);
            }else{
-               response += "<h1>File " + req.uri.substr(1) + " tidak ditemukan</h1>";
+               const std::string par= "<h1>File " + req.uri.substr(1) + " tidak ditemukan</h1>";
+               return response.pembentukan(contentType::html,true,par.size(),par,false);
            }
        }else if(req.uri.rfind(".css") == req.uri.length() - 4)
        {
-           response = httpHeader::getResponseHeadersCss();
+           //response = httpHeader::getResponseHeadersCss();
            if(fileEdit::checkFileExists("frontend/"+req.uri.substr(1)))
            {
-               response += fileEdit::readFile("frontend/"+req.uri.substr(1));
+               std::string res = fileEdit::readFile("frontend/"+req.uri.substr(1));
+               return response.pembentukan(contentType::css,false,res.size(),res,false);
            }else{
-               response += "/* File " + req.uri.substr(1) + " tidak ditemukan */";
+               const std::string par= "/* File " + req.uri.substr(1) + " tidak ditemukan */";
+               return response.pembentukan(contentType::css,true,par.size(),par,false);
            }
        }else if(req.uri.rfind(".js") == req.uri.length() - 3){
-           response = httpHeader::getResponseHeadersJs();
+           //response = httpHeader::getResponseHeadersJs();
            if(fileEdit::checkFileExists("frontend/"+req.uri.substr(1)))
            {
-               response += fileEdit::readFile("frontend/"+req.uri.substr(1));
+               std::string res = fileEdit::readFile("frontend/"+req.uri.substr(1));
+               return response.pembentukan(contentType::js,false,res.size(),res,false);
            }else{
-               response += "// File " + req.uri.substr(1) + " tidak ditemukan";
+               const std::string par= "// File " + req.uri.substr(1) + " tidak ditemukan";
+               return response.pembentukan(contentType::js,true,par.size(),par,false);
            }
 
         }else if(req.uri.rfind(".ico") == req.uri.length() - 4){
-           response = httpHeader::getResponseHeadersIco();
+           //response = httpHeader::getResponseHeadersIco();
            if(fileEdit::checkFileExists("frontend/"+req.uri.substr(1)))
            {
-               response += fileEdit::readFile("frontend/"+req.uri.substr(1));
+               std::string res = fileEdit::readFile("frontend/"+req.uri.substr(1));
+               return response.pembentukan(contentType::ico,false,res.size(),res,false);
            }else{
-               response += "// File " + req.uri.substr(1) + " tidak ditemukan";
+               const std::string par= "// File " + req.uri.substr(1) + " tidak ditemukan";
+               return response.pembentukan(contentType::ico,true,par.size(),par,false);
            }
 
         }
@@ -261,37 +294,45 @@ std::string responsfunc(std::string msg){
         if(req.uri == "/submit")
         {
             std::cout<<"nuh uh1\n";
-            nlohmann::json jsonBody = httpParser::bodytojson(req);
-            response = httpHeader::getResponseHeadersJson();
+            nlohmann::json jsonBody ;
+            if(!httpParser::bodytojson(req,jsonBody)){
+                //response = httpHeader::getResponseHeadersJsonBad();
+                nlohmann::json errorResponse;
+                errorResponse["error"] = "Bad Request: cannot be empty.";
+                return response.pembentukan(contentType::json,false,errorResponse.dump().size(),errorResponse.dump());
+            }
+            //response = httpHeader::getResponseHeadersJson();
             std::string atm=fileEdit::readFile("database/data.json");
             nlohmann::json db = nlohmann::json::parse(atm);
-            std::cout<<jsonBody.dump();
+            //std::cout<<jsonBody.dump();
             if(!(jsonBody["title"].is_string() &&
             jsonBody["category"].is_string() &&
             jsonBody["description"].is_string() &&
             jsonBody.size() == 3)){
 
-                response = httpHeader::getResponseHeadersJson();
+                //response = httpHeader::getResponseHeadersJsonBad();
                 nlohmann::json errorResponse;
                 errorResponse["error"] = "Bad Request: title, category, and content cannot be empty.";
-                return response + errorResponse.dump();
+                return response.pembentukan(contentType::json,false,errorResponse.dump().size(),errorResponse.dump());
             }
             //new code here
             for (const auto& item : db["data"])
             {
                 if (item["title"] == jsonBody["title"])
                 {
-                    response = httpHeader::getResponseHeadersJson();
+                    //response = httpHeader::getResponseHeadersJsonBad();
                     nlohmann::json errorResponse;
                     errorResponse["error"] = "Conflict: An item with the same title already exists.";
-                    return response + errorResponse.dump();
+                    return response.pembentukan(contentType::json,false,errorResponse.dump().size(),errorResponse.dump());
                 }
             }
             //end new code here
             std::cout<<"nuh uh\n";
             db["data"].push_back(jsonBody);
             fileEdit::editFile("database/data.json", db.dump(2));
-            response += jsonBody.dump();
+            nlohmann::json pasc;
+            pasc["error"]="";
+            return response.pembentukan(contentType::json,false,pasc.dump().size(),pasc.dump());
         }
         
     }
@@ -299,10 +340,15 @@ std::string responsfunc(std::string msg){
         if(req.uri.rfind("/update/") == 0)
         {
             std::string title = req.uri.substr(8);
-            nlohmann::json jsonBody = httpParser::bodytojson(req);
-            response = httpHeader::getResponseHeadersJson();
+            nlohmann::json jsonBody;
+            if(!httpParser::bodytojson(req,jsonBody)){
+                 //response = httpHeader::getResponseHeadersJsonBad();
+                const std::string res = "{\"error\": \"Bad Request: cannot be empty.\"}";
+                return response.pembentukan(contentType::json,true,res.size(),res);
+            }
+            //response = httpHeader::getResponseHeadersJson();
             std::string atm=fileEdit::readFile("database/data.json");
-            nlohmann::json db = nlohmann::json::parse(atm);
+            nlohmann::json db = nlohmann::json::parse((atm.size()==0)?"{}":atm);
             bool found = false;
             for(int i=0; i<db["data"].size(); i++)
             {
@@ -322,23 +368,24 @@ std::string responsfunc(std::string msg){
                         item["description"] = jsonBody["description"];
                     }
                     found = true;
-                    response += item.dump();
+                    //response += item.dump();
+                    response.pembentukan(contentType::json,false,item.dump().size(),item.dump());
                     break;
                 }
             }
             if(!found)
             {
-                response = httpHeader::getResponseHeadersJson();
-                response += "{\"error\": \"Item with ID " + title + " not found.\"}";
-                return response;
+                const std::string res = "{\"error\": \"Item with ID " + title + " not found.\"}";
+                return response.pembentukan(contentType::json,true,res.size(),res);
             }
             fileEdit::editFile("database/data.json", db.dump(2));
+            
         }
     }else if(req.method=="DELETE"){
         if(req.uri.rfind("/delete/") == 0)
         {
             std::string title = req.uri.substr(8);
-            response = httpHeader::getResponseHeadersJson();
+            //response = httpHeader::getResponseHeadersJson();
             std::string atm=fileEdit::readFile("database/data.json");
             nlohmann::json db = nlohmann::json::parse(atm);
             bool found = false;
@@ -348,22 +395,23 @@ std::string responsfunc(std::string msg){
                 {
                     db["data"].erase(i);
                     found = true;
-                    response += "{\"message\": \"Item with ID " + title + " deleted successfully.\"}";
-                    break;
+                    const std::string resp = "{\"message\": \"Item with ID " + title + " deleted successfully.\"}";
+                    fileEdit::editFile("database/data.json", db.dump(2));
+                    return response.pembentukan(contentType::json,false,resp.size(),resp);
                 }
             }
             if(!found)
             {
-                response = httpHeader::getResponseHeadersJson();
-                response += "{\"error\": \"Item with ID " + title + " not found.\"}";
-                return response;
+                //response = httpHeader::getResponseHeadersJson();
+                const std::string resp= "{\"error\": \"Item with ID " + title + " not found.\"}";
+                return response.pembentukan(contentType::json,true,resp.size(),resp);
             }
-            fileEdit::editFile("database/data.json", db.dump(2));
         }
     }
     else{
-        response = httpHeader::getResponseHeadersNotFound();
-        response += "<h1>404 Not Found</h1>";
+        //response = httpHeader::getResponseHeadersNotFound();
+        const std::string respo= "<h1>404 Not Found</h1>";
+        response.pembentukan(contentType::html,true,respo.size(),respo);
     }
     return response;
 }
