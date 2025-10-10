@@ -24,13 +24,14 @@
     <div class="body-wrapper">
       <div class="topbar">
         <div class="welcome">
-          <h1>WELCOME TO ....</h1>
+          <i class="fa-solid fa-list-check SiTugas-icon" onclick="fetchData()"></i>
+          <h1>SiTugas</h1>
         </div>
-        <!-- Topbar: hamburger kiri, search tengah, post-icon kanan -->
+        <!-- Header: hamburger kiri, search tengah, post-icon, switch mode kanan -->
         <div class="header">
             <nav class="navbar">
               <button onclick="toggleMenu()" aria-label="Menu" class="hamburger">
-                <i class="fa-solid fa-bars" style="background: none;"></i>
+                <i class="fa-solid fa-bars"></i>
               </button>
               <!-- Panel kategori (slide dari kiri) -->
               <ul class="navbar-menu" id="navbarMenu">
@@ -51,7 +52,7 @@
             <button class="fetch-button" onclick="fetchData()">All items</button>
             <input type="text" class="search-input" id="searchInput" placeholder="Ketik kata kunci..." />
             <button class="search-btn" onclick="searchData()">
-              <i class="fa-solid fa-magnifying-glass" style="background: none;"></i>
+              <i class="fa-solid fa-magnifying-glass"></i>
             </button>
             <button class="post-btn" onclick="showPostForm()" aria-label="Post">
               +
@@ -69,30 +70,29 @@
 
       <!-- 🔽 Form Post Data -->
       <div class="form-wrapper">
-        <div id="postForm" class="form-card" style="display: none; margin-top: 20px">
+        <div id="postForm" class="form-card">
           <div class="form-header">
             <h2>Tambah Data Baru</h2>
             <i class="fa-solid fa-xmark x-mark" onclick="hidePostForm()"></i>
           </div>
 
-          <label>Title:</label><br />
-          <input type="text" id="postTitle" /><br /><br />
+          <label>Title:</label><br/>
+          <input type="text" id="postTitle" />
 
-          <label>Description:</label><br />
-          <textarea id="postDescription"></textarea><br /><br />
+          <label>Description:</label><br/>
+          <textarea id="postDescription"></textarea><br />
 
-          <label>Category:</label><br />
-          <select id="postCategory">
-              <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
-              <option value="Pendidikan Agama">Pendidikan Agama</option>
-              <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
-              <option value="Sistem Digital">Sistem Digital</option>
-              <option value="Matematika Diskrit">Matematika Diskrit</option>
-              <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
-              <option value="Kalkulus">Kalkulus</option>
-              <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
-          </select>
-          <br /><br />
+          <label>Category:</label><br/>
+            <select id="postCategory">
+                <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
+                <option value="Pendidikan Agama">Pendidikan Agama</option>
+                <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
+                <option value="Sistem Digital">Sistem Digital</option>
+                <option value="Matematika Diskrit">Matematika Diskrit</option>
+                <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
+                <option value="Kalkulus">Kalkulus</option>
+                <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
+            </select>
 
           <button class="save-btn" onclick="submitPost()">
             <i class="fa-regular fa-floppy-disk"></i> Simpan
@@ -102,30 +102,29 @@
       <!-- 🔽 Form Post Data End-->
 
       <!-- 🔽 Form Edit Data -->
-        <div id="editForm" class="form-card" style="display: none; margin-top: 20px">
+        <div id="editForm" class="form-card">
           <div class="form-header">
             <h2>Edit Data Ini</h2>
             <i class="fa-solid fa-xmark x-mark" onclick="hideEditForm();"></i>
           </div>
 
           <label>Title:</label><br />
-          <input type="text" id="editTitle" /><br /><br />
+          <input type="text" id="editTitle" />
 
           <label>Description:</label><br />
-          <textarea id="editDescription"></textarea><br /><br />
+          <textarea id="editDescription"></textarea><br />
 
           <label>Category:</label><br />
-          <select id="editCategory">
-              <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
-              <option value="Pendidikan Agama">Pendidikan Agama</option>
-              <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
-              <option value="Sistem Digital">Sistem Digital</option>
-              <option value="Matematika Diskrit">Matematika Diskrit</option>
-              <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
-              <option value="Kalkulus">Kalkulus</option>
-              <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
-          </select>
-          <br /><br />
+            <select id="editCategory">
+                <option value="Algoritma dan Pemrograman">Algoritma dan Pemrograman</option>
+                <option value="Pendidikan Agama">Pendidikan Agama</option>
+                <option value="Bahasa Pemrograman I">Bahasa Pemrograman I</option>
+                <option value="Sistem Digital">Sistem Digital</option>
+                <option value="Matematika Diskrit">Matematika Diskrit</option>
+                <option value="Teknologi dan Transformasi Digital">Teknologi dan Transformasi Digital</option>
+                <option value="Kalkulus">Kalkulus</option>
+                <option value="Dasar Dasar Pemrograman">Dasar Dasar Pemrograman</option>
+            </select>
 
           <button class="save-btn" onclick="submitEdit()">
             <i class="fa-regular fa-floppy-disk"></i> Simpan
@@ -134,31 +133,47 @@
         </div>
       </div>
       <!-- 🔽 Form Edit Data End -->
-
       
+      <!-- render tabel -->
       <div  class="render-tabel">
-        <p id="urah"></p>
+        <div id="urah"></div>
+      </div>
+    </div>
+
+    <!-- alert modal -->
+    <div id="alertModal" class="alert-modal">
+      <div class="alert-modal-content">
+        <div class="alert-modal-header">
+          <i class="fa-solid fa-triangle-exclamation" style="color: #f80000; font-size: 48px;"></i>
+          <h2 id="alertTitle">Peringatan</h2>
+        </div>
+        <p id="alertMessage" class="alert-message"></p>
+        <div>
+          <button id="closeAlertBtn" class="btn-cancel">Close</button>
+        </div>
       </div>
     </div>
 
         <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal-overlay">
       <div class="modal-content">
-        <div class="modal-header">
-          <i class="fa-regular fa-trash-can"></i>
-          <h2>Hapus Data</h2>
+        <div class="delete-modal-header">
+          <div class="modal-title">
+            <div class="trash-can">
+              <i class="fa-regular fa-trash-can"></i>
+            </div>
+              <h2>Hapus Data</h2>
+          </div>
+              <i id="xMark" class="fa-solid fa-xmark x-mark"></i>
         </div>
-        <p id="deleteMessage" class="modal-message">
-          Apakah anda yakin ingin menghapus data ini? 
-          <br><strong>Data yang dihapus tidak bisa dipulihkan!</strong>
-        </p>
+        <div id="deleteMessage" class="modal-message"></div>
         <div class="modal-actions">
           <button id="confirmDeleteBtn" class="btn btn-delete">Delete</button>
           <button id="cancelDeleteBtn" class="btn btn-cancel">Cancel</button>
         </div>
       </div>
     </div>
-
+    
     <script src="/script.js"></script>
   </body>
 </html>
