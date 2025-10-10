@@ -8,6 +8,7 @@ body {
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
+  scroll-behavior: smooth;
 }
 
 :root {
@@ -22,9 +23,9 @@ body {
   --bg-danger: #dc2626;
   --bg-danger-hover: #b91c1c;
 
-  --border-primary: #f8fafc;
+  --border-primary: #e2e8f0;
   --border-secondary: #cbd5e1;
-  --border-focus: #cbd5e1;
+  --border-focus: #6366f1;
 
   --alpro-color: #ff8c42;
   --agama-color: #ffd700;
@@ -38,10 +39,12 @@ body {
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-inverse: #ffffff;
+  --text-tertiary: #64748b;
 
   --gradient-btn: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   --gradient-card: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   
+  --shadow-focus: 0 0 0 2px rgba(97, 100, 255, 0.2);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
@@ -70,7 +73,11 @@ body {
   color: var(--bg-button);
 }
 
+.SiTugas-icon {
+  font-size: 28px;
+}
 .topbar h1 {
+  display: inline-block;
   background: none;
 }
 
@@ -106,7 +113,7 @@ body {
 }
 
 /* ---------- Slide-in panel (left) ---------- */
-.navbar .navbar-menu {
+.navbar-menu {
   position: fixed;
   left: 0;
   top: 0;
@@ -123,12 +130,12 @@ body {
 }
 
 /* Panel open state */
-.navbar .navbar-menu.show {
+.navbar-menu.show {
   transform: translateX(0);
 }
 
 /* Menu item style inside panel */
-.navbar .navbar-menu li {
+.navbar-menu li {
   padding: 12px 16px;
   border-radius: 10px 10px 10px 10px;
   font-size: 15px;
@@ -267,7 +274,7 @@ body {
 .search-input {
   width: 400px;
   height: 25px;
-  padding: 6px;
+  padding: 6px 15px;
   font-size: 14px;
   background: var(--bg-input);
   color: var(--text-primary);
@@ -322,6 +329,9 @@ body {
   font-size: 25px;
   color: var(--text-secondary);
   background: none;
+}.switch-mode:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
 }
 
 /* =====================================
@@ -474,13 +484,15 @@ tr:hover {
 
 .x-mark {
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
 }
 .x-mark:hover {
   color: var(--text-primary);
 }
 
 .form-card {
+  display: none; 
+  margin-top: 20px;
   background: var(--gradient-card);
   color: var(--text-primary);
   border-radius: 0.5rem;
@@ -501,9 +513,9 @@ tr:hover {
   max-width: 90%;
   padding: 8px;
   margin-top: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 2rem;
   border: 1px solid var(--border-secondary);
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .form-card input:focus,
@@ -547,6 +559,63 @@ tr:hover {
   filter: brightness(1.1);
 }
 
+
+/* =====================================
+    ===== Modal Delete Style =====
+===================================== */
+/* 🔶 Alert Modal */
+.alert-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+}
+
+.alert-modal-content {
+  background: var(--gradient-card);
+  color: var(--text-primary);
+  margin: 15% auto;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.alert-modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.alert-message {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  margin-top: 0.1rem;
+  border: 1px solid var(--border-primary);
+}
+
+#alertModal .btn-cancel {
+  margin-top: 20px;
+  background-color: #64748b;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#alertModal .btn-cancel:hover {
+  background-color: #475569;
+}
+
 /* =====================================
     ===== Modal Delete Style =====
 ===================================== */
@@ -557,10 +626,10 @@ tr:hover {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
-  display: none; /* disembunyikan default */
+  display: none; 
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(5px); /* efek blur background */
+  backdrop-filter: blur(5px);
   z-index: 100;
 }
 
@@ -576,31 +645,51 @@ tr:hover {
   width: 350px;
   max-width: 90%;
   box-shadow: var(--shadow-lg);
-  text-align: center;
   animation: scaleIn 0.2s ease-in-out;
 }
 
-.modal-header {
+.delete-modal-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 15px;
 }
 
-.modal-header i {
-  font-size: 40px;
-  color: var(--danger, #ef4444);
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.modal-header h2 {
+.trash-can {
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  color: var(--bg-danger);
+  padding: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); 
+}
+
+.delete-modal-header h2 {
   margin: 0;
   font-size: 20px;
 }
 
 .modal-message {
+  color: var(--text-tertiary);
   margin: 15px 0;
   font-size: 14px;
+}
+
+.delete-title {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    border: 1px solid var(--border-primary);
 }
 
 .modal-actions {
@@ -654,7 +743,7 @@ tr:hover {
   --bg-th: #263349ff;
   --td-hover: brightness(1.3);
 
-  --border-primary: #1e293b;
+  --border-primary: #334155;
   --border-secondary: #475569;
   --border-focus: #6366f1;
   
@@ -663,6 +752,7 @@ tr:hover {
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-inverse: #0f172a;
+  --text-tertiary: #94a3b8;
 
   --gradient-card: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 
@@ -677,8 +767,8 @@ tr:hover {
 
 /* Tablet (<= 1024px) */
 @media (max-width: 1024px) {
-  .search-input {
-    width: 250px;   /* perkecil search bar */
+  .welcome h1{
+    cursor: pointer;
   }
 
   .form-card {
@@ -716,16 +806,21 @@ tr:hover {
     flex: 1; /* biar input memanjang di sisa ruang */
     width: 100%;  
     max-width: 100%;
+    padding: 6px 12px;
   }
 
   .switch-mode {
     padding-right: 5px;
   }
 
+  .render-tabel {
+    
+  }
   table {
     width: 90%;
-    display: block;      /* buat scroll horizontal */
-    overflow-x: auto;
+    max-width: 1000px;
+    display: block;      
+    overflow-x: auto; /* buat scroll horizontal */
     white-space: nowrap;
   }
 
