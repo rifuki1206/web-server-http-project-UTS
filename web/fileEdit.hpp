@@ -19,6 +19,12 @@ namespace fileEdit
         buffer << inFile.rdbuf();
         return buffer.str();
     }
+    std::string readbin(const std::string& filePath){
+        std::ifstream inFile(filePath, std::ios::binary);
+        std::stringstream buffer;
+        buffer << inFile.rdbuf();
+        return buffer.str();
+    }
     bool checkFileExists(const std::string& filePath){
         std::ifstream inFile(filePath);
         return inFile.good();
