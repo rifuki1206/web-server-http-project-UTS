@@ -286,6 +286,20 @@ httpresponse responsfunc(httpRequest req){
                return response.pembentukan(contentType::ico,true,par.size(),par,false);
            }
 
+        }else if(req.uri.rfind(".png") == req.uri.length() - 4){
+           //response = httpHeader::getResponseHeadersPng();
+           if(fileEdit::checkFileExists("frontend/"+req.uri.substr(1)))
+           {
+               std::string res = fileEdit::readbin("frontend/"+req.uri.substr(1));
+               return response.pembentukan(contentType::png,false,res.size(),res,false);
+           }else{
+               const std::string par= "// File " + req.uri.substr(1) + " tidak ditemukan";
+               return response.pembentukan(contentType::png,true,par.size(),par,false);
+           }
+        }else{
+            //response = httpHeader::getResponseHeadersNotFound();
+            const std::string par= "<h1>404 Not Found</h1>";
+            return response.pembentukan(contentType::notfound,true,par.size(),par,false);
         }
     }
     else if(req.method == "POST")
