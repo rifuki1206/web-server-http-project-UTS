@@ -8,6 +8,7 @@ enum class contentType
     js,
     json,
     ico,
+    png,
     notfound
 };
 namespace httpHeader
@@ -28,6 +29,8 @@ namespace httpHeader
             return "image/x-icon";
         case contentType::notfound:
             return "text/html";
+        case contentType::png:
+            return "image/png";
         default:
             return "text/plain";
         }
