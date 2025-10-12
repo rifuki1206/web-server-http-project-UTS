@@ -67,7 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(result => {
           if (result.message) {
-            alert(result.message);
+            document.getElementById("alertIcon1").style.display = "flex";
+            document.getElementById("alertIcon2").style.display = "none";
+            showAlertModal("Item berhasil dihapus");
           } else {
             alert('Item berhasil dihapus');
           }
@@ -85,17 +87,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   closeBtn.addEventListener("click", () => {
     itemToDelete = null;
-    modal.classList.remove("show");   // tutup modal tanpa hapus
+    modal.classList.remove("show");  
   });
 
   cancelBtn.addEventListener("click", () => {
     itemToDelete = null;
-    modal.classList.remove("show");   // tutup modal tanpa hapus
+    modal.classList.remove("show");
   });
 });
 // Delete data N
 
-// Search if enter and switch mode
+// Search jika enter diklik dan switch mode
 document.addEventListener("DOMContentLoaded", () => {
     fetchData();
     const searchInput = document.getElementById("searchInput");
@@ -187,7 +189,6 @@ function categoryData(category) {
             document.getElementById("urah").innerText = "Gagal memuat data kategori.";
         });
 }
-// Toggle hamburger menu N
 
 // Tutup panel ketika klik di luar
 document.addEventListener('click', function(event) {
@@ -203,6 +204,7 @@ document.addEventListener('click', function(event) {
     }
 });
 // Tutup panel ketika klik di luar N
+// Toggle hamburger menu N
 
 //searchData
 function searchData() {
@@ -212,6 +214,8 @@ function searchData() {
   const query = document.getElementById("searchInput").value.toLowerCase(); // BARUBARUBARU ambil teks dari input
 
   if (!query) {
+    document.getElementById("alertIcon1").style.display = "none";
+    document.getElementById("alertIcon2").style.display = "flex";
     showAlertModal("Silakan ketik kata kunci terlebih dahulu!");
     return;
   }
@@ -244,10 +248,7 @@ function showPostForm() {
 
   document.getElementById("postForm").style.display = "block";
     //Scroll ke form
-  document.getElementById("postForm").scrollIntoView({ behavior: "smooth" });
-    setTimeout(() => {
-    window.scrollBy(0, -200); // ubah sesuai tinggi topbar (misal 70–100)
-  }, 480);
+  document.getElementById("scrol").scrollIntoView({ behavior: "smooth" });
 }
 
 // Sembunyikan form
@@ -261,7 +262,9 @@ function submitPost() {
     const description = document.getElementById("postDescription").value;
     const category = document.getElementById("postCategory").value;
 
-    if (!title || !description || !category) {
+  if (!title || !description || !category) {
+      document.getElementById("alertIcon1").style.display = "none";
+      document.getElementById("alertIcon2").style.display = "flex";
         showAlertModal("Semua bagian harus diisi!");
         return;
     }
@@ -280,7 +283,9 @@ function submitPost() {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(() => {
+      .then(() => {
+      document.getElementById("alertIcon1").style.display = "flex";
+      document.getElementById("alertIcon2").style.display = "none";
         showAlertModal("data berhasil ditambahkan!");
 
       // reset field setelah sukses
@@ -313,10 +318,7 @@ function editItem(item) {
     document.getElementById("editCategory").value = item.category;
     document.getElementById("editForm").dataset.originalTitle = item.title;
       //Scroll ke form
-    document.getElementById("editForm").scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => {
-      window.scrollBy(0, -200); // ubah sesuai tinggi topbar (misal 70–100)
-    }, 480);
+    document.getElementById("scrol").scrollIntoView({ behavior: "smooth" });
   }
 
 function hideEditForm() {
@@ -331,6 +333,8 @@ function submitEdit() {
   const newCategory = document.getElementById("editCategory").value;
 
   if (!newTitle || !newDescription || !newCategory) {
+    document.getElementById("alertIcon1").style.display = "none";
+    document.getElementById("alertIcon2").style.display = "flex";
     showAlertModal("Semua bagian harus diisi!");
     return;
   }
@@ -351,6 +355,8 @@ function submitEdit() {
     return res.json();
   })
   .then(() => {
+    document.getElementById("alertIcon1").style.display = "flex";
+    document.getElementById("alertIcon2").style.display = "none";
     showAlertModal("data berhasil diubah!");
     hideEditForm();
     fetchData(); // refresh tabel
