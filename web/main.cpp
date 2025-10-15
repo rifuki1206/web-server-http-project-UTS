@@ -9,8 +9,15 @@
 void print_full(const std::string& s) {
     std::cout.write(s.data(), static_cast<std::streamsize>(s.size()));
 }
-
+void setupfile(){
+    if (fileEdit::checkFileExists("database/data.json")==false)
+    {
+        fileEdit::editFile("database/data.json","{\n\"data\":[]\n}");
+    }
+    
+}
 int main() {
+    setupfile();
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "WSAStartup failed\n";
@@ -62,7 +69,7 @@ int main() {
                     continue;
                 }
             }
-        std::cout<<"asep";
+        //std::cout<<"asep";
         httpresponse kirim;
         while(!clientbaru){
             char buffer[1024*4];
